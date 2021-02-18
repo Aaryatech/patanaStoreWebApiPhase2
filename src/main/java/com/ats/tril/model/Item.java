@@ -72,7 +72,11 @@ public class Item {
 
 	private int deletedIn;
 	
+	private int uom2;
 	
+	private float uomRatio;
+	
+	private float uomRatio2;
 
 	public int getCatId() {
 		return catId;
@@ -306,6 +310,30 @@ public class Item {
 		this.deletedIn = deletedIn;
 	}
 
+	public int getUom2() {
+		return uom2;
+	}
+
+	public void setUom2(int uom2) {
+		this.uom2 = uom2;
+	}
+
+	public float getUomRatio() {
+		return uomRatio;
+	}
+
+	public void setUomRatio(float uomRatio) {
+		this.uomRatio = uomRatio;
+	}
+
+	public float getUomRatio2() {
+		return uomRatio2;
+	}
+
+	public void setUomRatio2(float uomRatio2) {
+		this.uomRatio2 = uomRatio2;
+	}
+
 	@Override
 	public String toString() {
 		return "Item [itemId=" + itemId + ", itemCode=" + itemCode + ", itemDesc=" + itemDesc + ", itemDesc2="
@@ -316,7 +344,8 @@ public class Item {
 				+ ", itemRodLevel=" + itemRodLevel + ", itemLocation=" + itemLocation + ", itemAbc=" + itemAbc
 				+ ", itemIsCritical=" + itemIsCritical + ", itemIsCons=" + itemIsCons + ", itemIsCapital="
 				+ itemIsCapital + ", itemSchd=" + itemSchd + ", itemLife=" + itemLife + ", isUsed=" + isUsed
-				+ ", createdIn=" + createdIn + ", deletedIn=" + deletedIn + "]";
+				+ ", createdIn=" + createdIn + ", deletedIn=" + deletedIn + ", uom2=" + uom2 + ", uomRatio=" + uomRatio
+				+ ", uomRatio2=" + uomRatio2 + "]";
 	}
 
 }
