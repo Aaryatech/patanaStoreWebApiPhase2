@@ -72,6 +72,15 @@ public interface OfficeMrnDetailRepo extends JpaRepository<OfficeMrnDetail, Inte
 			"        and mh.mrn_id=md.mrn_id and mh.del_status=1",nativeQuery=true)
 	List<OfficeMrnDetail> getBatchByMultipleItemIds(@Param("itemIds")List<Integer> itemIds,@Param("date") String date);
 	
+	@Query(value="SELECT * FROM t_office_mrn_detail WHERE mrn_detail_id =:mrnOfcDtlId",nativeQuery=true)
+	OfficeMrnDetail findMrnQtyByMrnDetailId(@Param("mrnOfcDtlId") int mrnOfcDtlId); 
 	
+	@Transactional
+	@Modifying
+	@Query(value="UPDATE t_office_mrn_detail SET approve_qty=:aprvQty, remaining_qty=:remQty , mrn_detail_status=:mrnDtlStatus WHERE mrn_detail_id=:mrnOfcDtlId",nativeQuery=true)
+	int updateRemMrnQty(@Param("aprvQty") float aprvQty, @Param("remQty") float remQty, @Param("mrnDtlStatus") int mrnDtlStatus,  @Param("mrnOfcDtlId") int mrnOfcDtlId);
+
+	@Query(value="SELECT * FROM t_office_mrn_detail WHERE mrn_id =:ofcMrnHeadId",nativeQuery=true)
+	List<OfficeMrnDetail> getMrnDtlByHeadId(@Param("ofcMrnHeadId") int ofcMrnHeadId);
 	
 }

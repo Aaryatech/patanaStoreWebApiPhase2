@@ -73,6 +73,12 @@ public class MrnApiController {
 
 	@Autowired
 	PoItemForMrnEditRepo getPoItemForMrnEditRepo;
+	
+	@Autowired 
+	OfficeMrnDetailRepo officMrnDtlRepo;
+	
+	@Autowired 
+	OfficeMrnHeaderRepository officeMrnHeadRepo;
 
 	@RequestMapping(value = { "/getOneMrnHeader" }, method = RequestMethod.POST)
 	public @ResponseBody MrnHeader getMrnHeaderByMrnId(@RequestParam("mrnId") int mrnId) {
@@ -132,10 +138,145 @@ public class MrnApiController {
 				batchNo = new String();
 				batchNo = mrnNo + "-" + item.getItemCode();
 
+				int mrnOfcDtlId = detail.getMrnDetailId();
+				
+				System.out.println("Ofice MRN Detail Id : "+mrnOfcDtlId);
+				
+				detail.setMrnDetailId(0);
 				detail.setBatchNo(batchNo);
 
 				detail.setMrnId(mrnId);
 				MrnDetail mrnDetailRes = mrnDetailRepo.save(detail);
+				
+				PoDetail poDetail = poDetailRepo.findByPoDetailId(mrnDetailRes.getPoDetailId());
+
+				if (mrnDetailRes != null) {
+					float remainingQty = 0;
+
+					if (detail.getMrnQtyBeforeEdit() == -1) {
+
+						System.err.println("Inside mrn qty before Edit ==-1");
+
+						remainingQty = poDetail.getPendingQty() - mrnDetailRes.getMrnQty();
+
+					} else {
+
+						System.err.println("Inside mrn qty before edit is greater than 0");
+						remainingQty = poDetail.getPendingQty()
+								- (mrnDetailRes.getMrnQty()-detail.getMrnQtyBeforeEdit());
+
+					}
+
+					poDetail.setPendingQty(remainingQty);
+					int status = 1;
+
+					if (remainingQty <= 0) {
+						System.err.println("Pending qty =0 keeping status=2");
+						status = 2;
+					}
+
+					poDetail.setStatus(status);
+					PoDetail poDetailStatusUpdate = poDetailRepo.save(poDetail);
+					 
+					List<Integer> stss = new ArrayList<Integer>();
+					stss.add(2);
+					stss.add(9);
+					stss.add(7);
+					List<PoDetail> poDetailsList = poDetailRepo.findAllByStatusNotInAndPoId(stss, mrnDetailList.get(i).getPoId());
+
+					if (poDetailsList.isEmpty()) {
+
+						System.err.println("Po Detail list is Empty so Update po Header Status for POId "
+								+ mrnDetailList.get(i).getPoId());
+
+						int updatePoHeaderStatus = poHeaderRepository.updateResponsePoHead(2, mrnDetailList.get(i).getPoId());
+
+					}
+					else {
+						List<Integer> sts = new ArrayList<Integer>();
+						sts.add(0);
+						sts.add(1);
+							List<PoDetail> details=poDetailRepo.findAllByPoIdAndStatusNotIn(mrnDetailList.get(i).getPoId(),sts);
+							poDetailsList=new ArrayList<PoDetail>();
+							
+							poDetailsList = poDetailRepo.findAllByStatusAndPoId(1, mrnDetailList.get(i).getPoId());
+		
+						if(poDetailsList.isEmpty()) {
+		
+							int updatePoHeaderStatus = poHeaderRepository.updateResponsePoHead(0, mrnDetailList.get(i).getPoId());
+		
+						}
+						else {
+							int updatePoHeaderStatus = poHeaderRepository.updateResponsePoHead(1, mrnDetailList.get(i).getPoId());
+						}
+					}
+
+				}
+
+			}
+
+		} catch (Exception e) {
+
+			System.err.println("Exception in saving Mrn Header and Detail  " + e.getMessage());
+			e.printStackTrace();
+
+		}
+
+		return res;
+	}
+	
+	
+	
+	@RequestMapping(value = { "/saveOffictMrnToMrnHeadAndDetail" }, method = RequestMethod.POST)
+	public @ResponseBody MrnHeader saveOffictMrnToMrnHeadAndDetail(@RequestBody MrnHeader mrnHeader) {
+		System.err.println("inside web api save saveOffictMrnToMrnHeadAndDetail");
+		MrnHeader res = new MrnHeader();
+
+		try {
+
+			res = mrnHeaderRepository.saveAndFlush(mrnHeader);
+
+			List<MrnDetail> mrnDetailList = mrnHeader.getMrnDetailList();
+
+			int mrnId = res.getMrnId();
+			String mrnNo = res.getMrnNo();
+			String batchNo;
+			int ofcMrnHeadId = 0;
+			for (int i = 0; i < mrnDetailList.size(); i++) {
+
+				MrnDetail detail = mrnDetailList.get(i);
+
+				GetItem item = getItemRepository.getItemByItemId(detail.getItemId());
+				batchNo = new String();
+				batchNo = mrnNo + "-" + item.getItemCode();
+
+				int mrnOfcDtlId = detail.getMrnDetailId();
+				
+				System.out.println("Ofice MRN Detail Id : "+mrnOfcDtlId);
+				
+				detail.setMrnDetailId(0);
+				detail.setBatchNo(batchNo);
+
+				detail.setMrnId(mrnId);
+				MrnDetail mrnDetailRes = mrnDetailRepo.save(detail);
+				if(mrnDetailRes.getMrnDetailId()>0) {
+					
+					OfficeMrnDetail officeMrn = officMrnDtlRepo.findMrnQtyByMrnDetailId(mrnOfcDtlId);
+					ofcMrnHeadId = officeMrn.getMrnId();
+					
+					if(officeMrn!=null) {
+						float remQty = officeMrn.getRemainingQty()-detail.getMrnQty();
+						float aprvQty =  detail.getMrnQty()+officeMrn.getApproveQty();
+						int status = 0;
+						if(remQty==0) {
+							status = 2;
+						}else {
+							status = 1;
+						}
+						int updtofcMrnDtl = officMrnDtlRepo.updateRemMrnQty(aprvQty,remQty, status, mrnOfcDtlId);						
+					}					
+				}
+				
 
 				PoDetail poDetail = poDetailRepo.findByPoDetailId(mrnDetailRes.getPoDetailId());
 
@@ -213,7 +354,45 @@ public class MrnApiController {
 
 		return res;
 	}
+	
+	
+	@RequestMapping(value = { "/updateMrnHeadStatus" }, method = RequestMethod.POST)
+	public @ResponseBody ErrorMessage updateMrnDetailList(@RequestParam int mrnId, @RequestParam int status) {
+		 
+		ErrorMessage res = new ErrorMessage();
 
+		try {				
+				int updateheaderStatus = officeMrnHeadRepo.updateheaderStatus(mrnId, status);
+				if(updateheaderStatus>0) {
+					res.setMessage("Success");
+					res.setError(false);
+				}else {
+					res.setMessage("Fail");
+					res.setError(true);
+				}
+			}catch (Exception e) {
+				// TODO: handle exception
+			}
+		return res;
+	}
+	
+	
+	
+	@RequestMapping(value = { "/getOfficeMrnDtlByHeadId" }, method = RequestMethod.POST)
+	public @ResponseBody List<OfficeMrnDetail> getOfficeMrnDtlyHeadId(@RequestParam int ofcMrnHeadId) {
+		 
+		 List<OfficeMrnDetail> res = new ArrayList<OfficeMrnDetail>();
+
+		try {				
+			res = officMrnDtlRepo.getMrnDtlByHeadId(ofcMrnHeadId);
+				
+			}catch (Exception e) {
+				// TODO: handle exception
+			}
+		return res;
+	}
+	
+	
 	@RequestMapping(value = { "/getMrnHeaderList" }, method = RequestMethod.POST)
 	public @ResponseBody List<GetMrnHeader> getMrnHeaderList(@RequestParam("venId") List<Integer> venId,
 			@RequestParam("status") List<Integer> status) {
@@ -867,8 +1046,6 @@ public class MrnApiController {
 
 	}
 	
-	@Autowired OfficeMrnDetailRepo officMrnDtlRepo;
-	@Autowired OfficeMrnHeaderRepository officeMrnHeadRepo;
 	@RequestMapping(value = { "/saveOfficeMrnHeadAndDetail" }, method = RequestMethod.POST)
 	public @ResponseBody OfficeMrnHeader saveOfficeMrnHeadAndDetail(@RequestBody OfficeMrnHeader mrnHeader) {
 		System.err.println("inside web api save saveMrnHeadAndDetail");
