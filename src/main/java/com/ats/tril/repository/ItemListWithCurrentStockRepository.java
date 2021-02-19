@@ -179,7 +179,8 @@ public interface ItemListWithCurrentStockRepository extends JpaRepository<ItemLi
 			"            and item_issue_header.delete_status=1               \r\n" + 
 			"            and item_issue_detail.del_status=1               \r\n" + 
 			"            AND item_issue_detail.status = 2),\r\n" + 
-			"        0) AS issue_qty_avg ,coalesce(0) as  issue_return_qty     \r\n" + 
+			"        0) AS issue_qty_avg ,coalesce(0) as  issue_return_qty,"
+			+ "coalesce((select uom from m_uom u where u.uom_id=m_item.uom2),'-') AS issue_uom      \r\n" + 
 			"    FROM\r\n" + 
 			"        m_item      \r\n" + 
 			"    where\r\n" + 
@@ -344,7 +345,8 @@ public interface ItemListWithCurrentStockRepository extends JpaRepository<ItemLi
 			"            and item_issue_header.delete_status=1               \r\n" + 
 			"            and item_issue_detail.del_status=1               \r\n" + 
 			"            AND item_issue_detail.status = 2),\r\n" + 
-			"        0) AS issue_qty_avg,coalesce(0) AS issue_return_qty \r\n" + 
+			"        0) AS issue_qty_avg,coalesce(0) AS issue_return_qty"
+			+ ",coalesce((select uom from m_uom u where u.uom_id=m_item.uom2),'-') AS issue_uom  \r\n" + 
 			"    FROM\r\n" + 
 			"        m_item\r\n" + 
 			"    where\r\n" + 

@@ -72,6 +72,9 @@ public class ItemListWithCurrentStock {
 	@Transient
 	private float clsQty;
 
+	@Column(name = "issue_uom")
+	private String issueUom;
+	
 	public int getItemId() {
 		return itemId;
 	}
@@ -232,6 +235,14 @@ public class ItemListWithCurrentStock {
 		this.active = active;
 	}
 
+	public String getIssueUom() {
+		return issueUom;
+	}
+
+	public void setIssueUom(String issueUom) {
+		this.issueUom = issueUom;
+	}
+
 	@Override
 	public String toString() {
 		return "ItemListWithCurrentStock [itemId=" + itemId + ", itemCode=" + itemCode + ", catId=" + catId + ", grpId="
@@ -239,7 +250,7 @@ public class ItemListWithCurrentStock {
 				+ maxLevel + ", rolLevel=" + rolLevel + ", openingStock=" + openingStock + ", approveQty=" + approveQty
 				+ ", issueQty=" + issueQty + ", issueReturnQty=" + issueReturnQty + ", damageQty=" + damageQty
 				+ ", poPending=" + poPending + ", itemopQty=" + itemopQty + ", issueQtyAvg=" + issueQtyAvg + ", active="
-				+ active + ", avgIssueQty=" + avgIssueQty + ", clsQty=" + clsQty + "]";
+				+ active + ", avgIssueQty=" + avgIssueQty + ", clsQty=" + clsQty + ", issueUom=" + issueUom + "]";
 	}
  
 	
