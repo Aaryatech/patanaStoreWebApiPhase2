@@ -37,6 +37,7 @@ import com.ats.tril.model.SubDept;
 import com.ats.tril.model.TaxForm;
 import com.ats.tril.model.Type;
 import com.ats.tril.model.Uom;
+import com.ats.tril.model.UomConversion;
 import com.ats.tril.model.User;
 import com.ats.tril.model.Vendor;
 import com.ats.tril.model.VendorListForRateVarification;
@@ -63,6 +64,7 @@ import com.ats.tril.repository.StateRepository;
 import com.ats.tril.repository.SubDeptRepository;
 import com.ats.tril.repository.TaxFormRepository;
 import com.ats.tril.repository.TypeRepository;
+import com.ats.tril.repository.UomConversionRepository;
 import com.ats.tril.repository.UomRepository;
 import com.ats.tril.repository.UserRepository;
 import com.ats.tril.repository.VendorListForRateVarificationRepository;
@@ -130,25 +132,28 @@ public class MasterController {
 
 	@Autowired
 	DocTypeRepository docTypeRepository;
-	
+
 	@Autowired
 	TypeRepository typeRepository;
-	
+
 	@Autowired
 	SettingValueRepository settingValueRepository;
 
 	@Autowired
 	UserRepository userRepository;
-	
+
 	@Autowired
 	CompanyRepository companyRepository;
-	
+
 	@Autowired
 	VendorListForRateVarificationRepository vendorListForRateVarificationRepository;
-	
+
 	@Autowired
 	DepartmentMasterRepository departmentMasterRepository;
-	
+
+	@Autowired
+	UomConversionRepository uomConversionRepository;
+
 	@RequestMapping(value = { "/getDepartmentMasterList" }, method = RequestMethod.GET)
 	public @ResponseBody List<DepartmentMaster> getDepartmentMasterList() {
 
@@ -166,7 +171,7 @@ public class MasterController {
 		return list;
 
 	}
-	
+
 	@RequestMapping(value = { "/getCompanyDetails" }, method = RequestMethod.GET)
 	public @ResponseBody Company getCompanyDetails() {
 
@@ -184,7 +189,7 @@ public class MasterController {
 		return res;
 
 	}
-	
+
 	@RequestMapping(value = { "/saveUser" }, method = RequestMethod.POST)
 	public @ResponseBody User saveUser(@RequestBody User user) {
 
@@ -202,7 +207,7 @@ public class MasterController {
 		return res;
 
 	}
-	
+
 	@RequestMapping(value = { "/getUserList" }, method = RequestMethod.GET)
 	public @ResponseBody List<User> getUserList() {
 
@@ -220,7 +225,7 @@ public class MasterController {
 		return userList;
 
 	}
-	
+
 	@RequestMapping(value = { "/getUserById" }, method = RequestMethod.POST)
 	public @ResponseBody User getUserById(@RequestParam("userId") int userId) {
 
@@ -229,7 +234,6 @@ public class MasterController {
 		try {
 
 			user = userRepository.findById(userId);
-			 
 
 		} catch (Exception e) {
 
@@ -239,7 +243,7 @@ public class MasterController {
 		return user;
 
 	}
-	
+
 	@RequestMapping(value = { "/deleteUser" }, method = RequestMethod.POST)
 	public @ResponseBody ErrorMessage deleteUser(@RequestParam("userId") int userId) {
 
@@ -247,14 +251,13 @@ public class MasterController {
 
 		try {
 
-			int delete = userRepository.delteUser(userId,1);
-			
-			if(delete==1) {
-				
+			int delete = userRepository.delteUser(userId, 1);
+
+			if (delete == 1) {
+
 				errorMessage.setError(false);
 				errorMessage.setMessage("deleted");
-			}
-			else {
+			} else {
 				errorMessage.setError(true);
 				errorMessage.setMessage("failed deleted");
 			}
@@ -267,9 +270,9 @@ public class MasterController {
 		return errorMessage;
 
 	}
-	
+
 	@RequestMapping(value = { "/getSettingValue" }, method = RequestMethod.POST)
-	public @ResponseBody  SettingValue  getSettingValue(@RequestParam("name") String name) {
+	public @ResponseBody SettingValue getSettingValue(@RequestParam("name") String name) {
 
 		SettingValue settingValue = new SettingValue();
 
@@ -285,7 +288,7 @@ public class MasterController {
 		return settingValue;
 
 	}
-	
+
 	@RequestMapping(value = { "/getAlltype" }, method = RequestMethod.GET)
 	public @ResponseBody List<Type> getAlltype() {
 
@@ -1328,10 +1331,10 @@ public class MasterController {
 		}
 		return errorMessage;
 	}
-	
-	
+
 	@RequestMapping(value = { "/getVendorListByItemIdForRateVerification" }, method = RequestMethod.POST)
-	public @ResponseBody List<VendorListForRateVarification> getVendorListByItemIdForRateVerification(@RequestParam("itemId") int itemId) {
+	public @ResponseBody List<VendorListForRateVarification> getVendorListByItemIdForRateVerification(
+			@RequestParam("itemId") int itemId) {
 
 		List<VendorListForRateVarification> vendor = new ArrayList<VendorListForRateVarification>();
 
@@ -1345,6 +1348,84 @@ public class MasterController {
 
 		}
 		return vendor;
+
+	}
+
+	@RequestMapping(value = { "/saveUomConversion" }, method = RequestMethod.POST)
+	public @ResponseBody UomConversion saveUomConversion(@RequestBody UomConversion uomConversion) {
+
+		UomConversion res = new UomConversion();
+
+		try {
+
+			res = uomConversionRepository.save(uomConversion);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return res;
+
+	}
+
+	@RequestMapping(value = { "/getUomConversionByUomId" }, method = RequestMethod.POST)
+	public @ResponseBody UomConversion getUomConversionByUomId(@RequestParam("id") int id) {
+
+		UomConversion uom = null;
+		try {
+			uom = uomConversionRepository.findByConvertId(id);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return uom;
+
+	}
+
+	@RequestMapping(value = { "/deleteUomConversion" }, method = RequestMethod.POST)
+	public @ResponseBody ErrorMessage deleteUomConversion(@RequestParam("id") int id) {
+
+		ErrorMessage errorMessage = new ErrorMessage();
+
+		try {
+			int delete = uomConversionRepository.deleteUomConversion(id);
+
+			if (delete == 1) {
+				errorMessage.setError(false);
+				errorMessage.setMessage(" Deleted Successfully");
+			} else {
+				errorMessage.setError(true);
+				errorMessage.setMessage("Deletion Failed");
+			}
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+			errorMessage.setError(true);
+			errorMessage.setMessage("Deletion Failed :EXC");
+
+		}
+		return errorMessage;
+	}
+
+	@RequestMapping(value = { "/getAllUomConversion" }, method = RequestMethod.GET)
+	public @ResponseBody List<UomConversion> getAllUomConversion() {
+
+		List<UomConversion> uomList = new ArrayList<UomConversion>();
+
+		try {
+
+			uomList = uomConversionRepository.findAllByDelStuatus(1);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return uomList;
 
 	}
 
@@ -1561,7 +1642,7 @@ public class MasterController {
 		return itemList;
 
 	}
-	
+
 	@RequestMapping(value = { "/getItemByItemIds" }, method = RequestMethod.POST)
 	public @ResponseBody List<GetItem> getItemByItemIds(@RequestParam("itemIds") List<Integer> itemIds) {
 
@@ -1570,7 +1651,6 @@ public class MasterController {
 		try {
 
 			itemList = getItemRepository.getItemListByItemIds(itemIds);
-			 
 
 		} catch (Exception e) {
 
@@ -1662,6 +1742,34 @@ public class MasterController {
 
 	}
 
+	@RequestMapping(value = { "/updateUomIdsInItemMaster" }, method = RequestMethod.POST)
+	public @ResponseBody ErrorMessage updateUomIdsInItemMaster(@RequestParam("id") int id, @RequestParam("uom") int uom,
+			@RequestParam("uom2") int uom2, @RequestParam("uom2ratio") float uom2ratio,
+			@RequestParam("umname") String umname) {
+
+		ErrorMessage errorMessage = new ErrorMessage();
+
+		try {
+			int delete = itemRepository.updateUomIdsInItemMaster(id, uom, uom2, uom2ratio, umname);
+
+			if (delete == 1) {
+				errorMessage.setError(false);
+				errorMessage.setMessage(" Deleted Successfully");
+			} else {
+				errorMessage.setError(true);
+				errorMessage.setMessage("Deletion Failed");
+			}
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+			errorMessage.setError(true);
+			errorMessage.setMessage("Deletion Failed :EXC");
+
+		}
+		return errorMessage;
+	}
+
 	@RequestMapping(value = { "/docTypeById" }, method = RequestMethod.POST)
 	public @ResponseBody DocType docTypeById(@RequestParam("docTypeId") int docTypeId) {
 
@@ -1715,7 +1823,7 @@ public class MasterController {
 		return res;
 
 	}
-	
+
 	@RequestMapping(value = { "/getNextVendorNo" }, method = RequestMethod.POST)
 	public @ResponseBody ErrorMessage getNextVendorNo(@RequestParam("str") String str) {
 
@@ -1723,49 +1831,42 @@ public class MasterController {
 		ErrorMessage errorMessage = new ErrorMessage();
 		try {
 			vendor = vendorRepository.getNextVendorNo(str);
-			
-			if(vendor!=null)
-			{
+
+			if (vendor != null) {
 				String code = vendor.getVendorCode();
 				String alpha = new String();
 				String zero = new String();
 				int codeNo = 0;
-				
-				for(int i = 0 ; i<code.length() ; i++)
-				{
+
+				for (int i = 0; i < code.length(); i++) {
 					char ch = code.charAt(i);
-					if(Character.isDigit(ch)){
-						codeNo = Integer.parseInt(code.substring(i, code.length()))+1; 
+					if (Character.isDigit(ch)) {
+						codeNo = Integer.parseInt(code.substring(i, code.length())) + 1;
 						break;
-					}
-					else {
-						alpha = alpha+ch;
+					} else {
+						alpha = alpha + ch;
 					}
 				}
-				
-				for(int i = 0 ; i< (6-(alpha.length()+String.valueOf(codeNo).length())) ; i++)
-				{
-					zero=zero+"0";
+
+				for (int i = 0; i < (6 - (alpha.length() + String.valueOf(codeNo).length())); i++) {
+					zero = zero + "0";
 				}
-				
-				code=alpha+zero+String.valueOf(codeNo);
-				System.out.println("new VedorCode    " + code); 
+
+				code = alpha + zero + String.valueOf(codeNo);
+				System.out.println("new VedorCode    " + code);
 				errorMessage.setError(false);
-				errorMessage.setMessage(code); 
-			}
-			else
-			{
+				errorMessage.setMessage(code);
+			} else {
 				errorMessage.setError(true);
 				String alpha = str;
 				String zero = new String();
-				String code; 
-				
-				for(int i = 0 ; i< (5-alpha.length()) ; i++)
-				{
-					zero=zero+"0";
+				String code;
+
+				for (int i = 0; i < (5 - alpha.length()); i++) {
+					zero = zero + "0";
 				}
-				code=alpha+zero+"1";
-				errorMessage.setMessage(code); 
+				code = alpha + zero + "1";
+				errorMessage.setMessage(code);
 			}
 
 		} catch (Exception e) {
@@ -1776,7 +1877,7 @@ public class MasterController {
 		return errorMessage;
 
 	}
-	
+
 	@RequestMapping(value = { "/getNextItemCode" }, method = RequestMethod.POST)
 	public @ResponseBody ErrorMessage getNextItemCode(@RequestParam("str") String str) {
 
@@ -1784,49 +1885,42 @@ public class MasterController {
 		ErrorMessage errorMessage = new ErrorMessage();
 		try {
 			item = itemRepository.getNextItemCode(str);
-			
-			if(item!=null)
-			{
+
+			if (item != null) {
 				String code = item.getItemCode();
 				String alpha = new String();
 				String zero = new String();
 				int codeNo = 0;
-				
-				for(int i = 0 ; i<code.length() ; i++)
-				{
+
+				for (int i = 0; i < code.length(); i++) {
 					char ch = code.charAt(i);
-					if(Character.isDigit(ch)){
-						codeNo = Integer.parseInt(code.substring(i, code.length()))+1; 
+					if (Character.isDigit(ch)) {
+						codeNo = Integer.parseInt(code.substring(i, code.length())) + 1;
 						break;
-					}
-					else {
-						alpha = alpha+ch;
+					} else {
+						alpha = alpha + ch;
 					}
 				}
-				
-				for(int i = 0 ; i< (6-(alpha.length()+String.valueOf(codeNo).length())) ; i++)
-				{
-					zero=zero+"0";
+
+				for (int i = 0; i < (6 - (alpha.length() + String.valueOf(codeNo).length())); i++) {
+					zero = zero + "0";
 				}
-				
-				code=alpha+zero+String.valueOf(codeNo);
-				System.out.println("new VedorCode    " + code); 
+
+				code = alpha + zero + String.valueOf(codeNo);
+				System.out.println("new VedorCode    " + code);
 				errorMessage.setError(false);
-				errorMessage.setMessage(code); 
-			}
-			else
-			{
+				errorMessage.setMessage(code);
+			} else {
 				errorMessage.setError(true);
 				String alpha = str;
 				String zero = new String();
-				String code; 
-				
-				for(int i = 0 ; i< (5-alpha.length()) ; i++)
-				{
-					zero=zero+"0";
+				String code;
+
+				for (int i = 0; i < (5 - alpha.length()); i++) {
+					zero = zero + "0";
 				}
-				code=alpha+zero+"1";
-				errorMessage.setMessage(code); 
+				code = alpha + zero + "1";
+				errorMessage.setMessage(code);
 			}
 
 		} catch (Exception e) {
@@ -1840,6 +1934,7 @@ public class MasterController {
 
 	@Autowired
 	ApproveByRepo aprvRepo;
+
 	@RequestMapping(value = { "/saveVendorApproveBy" }, method = RequestMethod.POST)
 	public @ResponseBody ApproveBy saveVendorApproveBy(@RequestBody ApproveBy approve) {
 
@@ -1857,7 +1952,7 @@ public class MasterController {
 		return res;
 
 	}
-	
+
 	@RequestMapping(value = { "/getApproveByList" }, method = RequestMethod.GET)
 	public @ResponseBody List<ApproveBy> getApproveByList() {
 
@@ -1874,7 +1969,7 @@ public class MasterController {
 		return res;
 
 	}
-	
+
 	@RequestMapping(value = { "/getApproveByInfoById" }, method = RequestMethod.POST)
 	public @ResponseBody ApproveBy getApproveByInfoById(@RequestParam("apprvId") int apprvId) {
 
@@ -1891,7 +1986,7 @@ public class MasterController {
 		}
 		return res;
 	}
-	
+
 	@RequestMapping(value = { "/deleteApproveBy" }, method = RequestMethod.POST)
 	public @ResponseBody ErrorMessage deleteApproveBy(@RequestParam("apprvId") int apprvId) {
 

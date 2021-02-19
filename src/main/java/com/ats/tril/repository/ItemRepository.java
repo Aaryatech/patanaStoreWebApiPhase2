@@ -21,7 +21,12 @@ public interface ItemRepository extends JpaRepository<Item, Integer> {
 
 	List<Item> findAllByIsUsed(int i);
 
-	@Query(value=("select *  from m_item where item_code = ( select max(item_code) from m_item where item_code LIKE :str% )"),nativeQuery=true)
+	@Query(value = ("select *  from m_item where item_code = ( select max(item_code) from m_item where item_code LIKE :str% )"), nativeQuery = true)
 	Item getNextItemCode(@Param("str") String str);
+
+	@Transactional
+	@Modifying
+	@Query("UPDATE Item SET uomRatio=:uom2ratio ,itemUom2=:uom,uom2=:uom2,itemUom=:umname WHERE uomRatio=:id")
+	int updateUomIdsInItemMaster(int id, int uom, int uom2, float uom2ratio, String umname);
 
 }
