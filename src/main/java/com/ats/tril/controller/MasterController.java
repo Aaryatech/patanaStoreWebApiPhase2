@@ -1743,7 +1743,7 @@ public class MasterController {
 	}
 
 	@RequestMapping(value = { "/updateUomIdsInItemMaster" }, method = RequestMethod.POST)
-	public @ResponseBody ErrorMessage updateUomIdsInItemMaster(@RequestParam("id") int id, @RequestParam("uom") int uom,
+	public @ResponseBody ErrorMessage updateUomIdsInItemMaster(@RequestParam("id") int id, @RequestParam("uom") String uom,
 			@RequestParam("uom2") int uom2, @RequestParam("uom2ratio") float uom2ratio,
 			@RequestParam("umname") String umname) {
 

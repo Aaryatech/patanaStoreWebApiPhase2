@@ -26,7 +26,7 @@ public interface ItemRepository extends JpaRepository<Item, Integer> {
 
 	@Transactional
 	@Modifying
-	@Query("UPDATE Item SET uomRatio=:uom2ratio ,itemUom2=:uom,uom2=:uom2,itemUom=:umname WHERE uomRatio=:id")
-	int updateUomIdsInItemMaster(int id, int uom, int uom2, float uom2ratio, String umname);
+	@Query("UPDATE Item SET uom_ratio2=:uom2ratio ,item_uom2=:uom,uom2=:uom2,item_uom=:umname WHERE uom_ratio=:id")
+	int updateUomIdsInItemMaster(int id, String uom, int uom2, float uom2ratio, String umname);
 
 }
