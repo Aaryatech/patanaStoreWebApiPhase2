@@ -52,6 +52,7 @@ public class GetItem {
 	private float uomRatio;
 	private float uomRatio2;
 	
+	
 	public int getItemId() {
 		return itemId;
 	}
