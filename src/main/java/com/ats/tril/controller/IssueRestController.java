@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ats.tril.model.ErrorMessage;
 import com.ats.tril.model.GetIssueDetail;
 import com.ats.tril.model.GetIssueHeader;
+import com.ats.tril.model.GetIssueReturn;
 import com.ats.tril.model.IssueDetail;
 import com.ats.tril.model.IssueHeader;
 import com.ats.tril.model.IssueItemListForIssueReturn;
@@ -24,6 +25,7 @@ import com.ats.tril.model.mrn.MrnDetail;
 import com.ats.tril.model.mrn.MrnHeader;
 import com.ats.tril.repository.GetIssueDetailRepository;
 import com.ats.tril.repository.GetIssueHeaderRepository;
+import com.ats.tril.repository.GetIssueReturnRepository;
 import com.ats.tril.repository.IssueDetailRepository;
 import com.ats.tril.repository.IssueHeaderRepository;
 import com.ats.tril.repository.IssueItemListForIssueReturnRepository;
@@ -52,6 +54,9 @@ public class IssueRestController {
 
 	@Autowired
 	MrnHeaderRepository mrnHeaderRepository;
+
+	@Autowired
+	GetIssueReturnRepository getIssueReturnRepository;
 
 	@RequestMapping(value = { "/saveIssueHeaderAndDetail" }, method = RequestMethod.POST)
 	public @ResponseBody IssueHeader saveIssueHeaderAndDetail(@RequestBody IssueHeader issueHeader) {
@@ -504,4 +509,22 @@ public class IssueRestController {
 
 	}
 
+	@RequestMapping(value = { "/getIssueReturnList" }, method = RequestMethod.POST)
+	public @ResponseBody List<GetIssueReturn> getIssueReturnList(@RequestParam("fromDate") String fromDate,
+			@RequestParam("toDate") String toDate) {
+
+		List<GetIssueReturn> res = new ArrayList<>();
+
+		try {
+
+			res = getIssueReturnRepository.getIssueReturnList(fromDate, toDate);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return res;
+
+	}
 }
