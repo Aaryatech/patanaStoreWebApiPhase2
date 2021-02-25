@@ -17,4 +17,7 @@ public interface IssueDetailRepository extends JpaRepository<IssueDetail, Intege
 	@Query("UPDATE IssueDetail SET status=:status WHERE issue_detail_id in (:issueDetalId)")
 	int updateStatusWhileApprov(@Param("issueDetalId")List<Integer> issueDetalId,@Param("status") int status);
 
+	@Query(value=("select id.* from item_issue_detail id where id.issue_detail_id in (:issueDetailId) "),nativeQuery=true)
+	List<IssueDetail> getIssueDetailByIssueDetailId(List<Integer> issueDetailId);
+
 }

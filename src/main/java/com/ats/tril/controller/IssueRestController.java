@@ -467,4 +467,41 @@ public class IssueRestController {
 
 	}
 
+	@RequestMapping(value = { "/getIssueDetailByIssueDetailId" }, method = RequestMethod.POST)
+	public @ResponseBody List<IssueDetail> getIssueDetailByIssueDetailId(
+			@RequestParam("issueDetailId") List<Integer> issueDetailId) {
+
+		List<IssueDetail> list = new ArrayList<IssueDetail>();
+
+		try {
+
+			list = issueDetailRepository.getIssueDetailByIssueDetailId(issueDetailId);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return list;
+
+	}
+
+	@RequestMapping(value = { "/saveIssueDetail" }, method = RequestMethod.POST)
+	public @ResponseBody List<IssueDetail> saveIssueDetail(@RequestBody List<IssueDetail> list) {
+
+		List<IssueDetail> issueDetailList = new ArrayList<IssueDetail>();
+
+		try {
+
+			issueDetailList = issueDetailRepository.saveAll(list);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return issueDetailList;
+
+	}
+
 }
