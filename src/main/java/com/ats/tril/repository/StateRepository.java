@@ -20,5 +20,7 @@ public interface StateRepository extends JpaRepository<State, Integer> {
 	@Modifying
 	@Query("UPDATE State SET isUsed=0  WHERE state_id=:stateId")
 	int deleteState(@Param("stateId") int stateId);
+	
+	State findByStateCode(String stateCode);
 
 }

@@ -1544,6 +1544,22 @@ public class MasterController {
 		return state;
 
 	}
+	
+	@RequestMapping(value = { "/getStateByStateCode" }, method = RequestMethod.POST)
+	public @ResponseBody State getStateByStateCode(@RequestParam("stateCode") String stateCode) {
+
+		State state = null;
+		try {
+			state = stateRepository.findByStateCode(stateCode);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return state;
+
+	}
 
 	@RequestMapping(value = { "/getAllStates" }, method = RequestMethod.GET)
 	public @ResponseBody List<State> getAllStates() {
