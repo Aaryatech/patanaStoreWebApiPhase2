@@ -435,6 +435,43 @@ public class IndentController {
 
 		return err;
 	}
+	
+	@RequestMapping(value = { "/editIndentTransDetailQty" }, method = RequestMethod.POST)
+	public @ResponseBody ErrorMessage editIndentTransDetailQty(@RequestParam("indQty") float indQty,
+			@RequestParam("indDId") int indDId) {
+
+		ErrorMessage err = new ErrorMessage();
+		int response = 0;
+
+		try {
+			
+			SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
+ 
+			response = indentTransRepo.updateIndentTransQyts(indQty, indDId);
+
+			if (response > 0) {
+
+				err.setError(false);
+				err.setMessage("success editIndent Qty Detail");
+
+			}
+
+			else {
+
+				err.setError(true);
+				err.setMessage("failed editIndent Qty Detail");
+
+			}
+
+		} catch (Exception e) {
+
+			System.err.println("Exception in editIndentTransDetailQty   " + e.getMessage());
+			e.printStackTrace();
+
+		}
+
+		return err;
+	}
 
 	// sac
 
