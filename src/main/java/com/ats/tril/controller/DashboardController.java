@@ -81,6 +81,28 @@ public class DashboardController {
 
 	}
 	
+	@RequestMapping(value = { "/getIndentHeaderList" }, method = RequestMethod.POST)
+	public @ResponseBody List<GetIndents> getIndentHeaderList(@RequestParam("status") List<Integer> status) {
+
+		List<GetIndents> indentList = new ArrayList<GetIndents>();
+
+		try {
+            System.out.println(status);
+			indentList = getIndentRepository.getIndentList(status);			
+			
+			System.err.println("indent List " + indentList.toString());
+		} catch (Exception e) {
+
+			System.err.println("Exception in getIndentHeaderList Indent  " + e.getMessage());
+
+			e.printStackTrace();
+
+		}
+
+		return indentList;
+
+	}
+	
 	@RequestMapping(value = { "/getPoHeaderDashList" }, method = RequestMethod.POST)
 	public @ResponseBody List<GetPoHeader> getPOHeaderList(@RequestParam("poType") int poType,@RequestParam("status") List<Integer> status) {
 
