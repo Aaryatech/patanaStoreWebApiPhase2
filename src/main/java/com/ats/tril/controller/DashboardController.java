@@ -103,6 +103,29 @@ public class DashboardController {
 
 	}
 	
+	@RequestMapping(value = { "/getIndentTransDtlList" }, method = RequestMethod.POST)
+	public @ResponseBody List<DashIndentDetails> getIndentTransDtlList(@RequestParam("indMId") int indMId, 
+			@RequestParam("status") List<Integer> status) {
+
+		List<DashIndentDetails> dashIndentDetailList = new ArrayList<DashIndentDetails>();
+
+		try {
+			
+			dashIndentDetailList =indentTransRepository.findByIndMIdAndIndDStatusIn(indMId,status);
+				
+		} catch (Exception e) {
+
+			System.err.println("Exception in getIndentTransDtlList  " + e.getMessage());
+
+			e.printStackTrace();
+
+		}
+
+		return dashIndentDetailList;
+
+	}
+	
+	
 	@RequestMapping(value = { "/getPoHeaderDashList" }, method = RequestMethod.POST)
 	public @ResponseBody List<GetPoHeader> getPOHeaderList(@RequestParam("poType") int poType,@RequestParam("status") List<Integer> status) {
 
