@@ -354,5 +354,19 @@ public interface ItemListWithCurrentStockRepository extends JpaRepository<ItemLi
 			"        and m_item.item_id=:itemId"), nativeQuery = true)
 	ItemListWithCurrentStock getItemListByItemIdWithStock(@Param("firstDate")String firstDate,@Param("fromDate")String fromDate,
 			@Param("toDate")String toDate,@Param("itemId") int itemId);
+	
+	@Query(value = ("Select\r\n" + 
+			"            SUM(item_issue_detail.item_request_qty) as yesterday_issue                    \r\n" + 
+			"        FROM\r\n" + 
+			"            item_issue_header,\r\n" + 
+			"            item_issue_detail                     \r\n" + 
+			"        WHERE\r\n" + 
+			"            item_issue_header.issue_date between :fromDate and :toDate                            \r\n" + 
+			"            AND item_issue_header.issue_id=item_issue_detail.issue_id                             \r\n" + 
+			"            AND item_issue_detail.item_id=:itemId                        \r\n" + 
+			"            and item_issue_header.delete_status=1                             \r\n" + 
+			"            and item_issue_detail.del_status=1                             \r\n" + 
+			"            AND item_issue_detail.status = 2 "), nativeQuery = true)
+	float getYesterdayIssue(@Param("fromDate")String fromDate,@Param("toDate")String toDate,@Param("itemId") int itemId);
 
 }
