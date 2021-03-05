@@ -278,70 +278,67 @@ public class MrnApiController {
 				}
 				
 
-				PoDetail poDetail = poDetailRepo.findByPoDetailId(mrnDetailRes.getPoDetailId());
-
-				if (mrnDetailRes != null) {
-					float remainingQty = 0;
-
-					if (detail.getMrnQtyBeforeEdit() == -1) {
-
-						System.err.println("Inside mrn qty before Edit ==-1");
-
-						remainingQty = poDetail.getPendingQty() - mrnDetailRes.getMrnQty();
-
-					} else {
-
-						System.err.println("Inside mrn qty before edit is greater than 0");
-						remainingQty = poDetail.getPendingQty()
-								- (mrnDetailRes.getMrnQty()-detail.getMrnQtyBeforeEdit());
-
-					}
-
-					poDetail.setPendingQty(remainingQty);
-					int status = 1;
-
-					if (remainingQty <= 0) {
-						System.err.println("Pending qty =0 keeping status=2");
-						status = 2;
-					}
-
-					poDetail.setStatus(status);
-					PoDetail poDetailStatusUpdate = poDetailRepo.save(poDetail);
-					 
-					List<Integer> stss = new ArrayList<Integer>();
-					stss.add(2);
-					stss.add(9);
-					stss.add(7);
-					List<PoDetail> poDetailsList = poDetailRepo.findAllByStatusNotInAndPoId(stss, mrnDetailList.get(i).getPoId());
-
-					if (poDetailsList.isEmpty()) {
-
-						System.err.println("Po Detail list is Empty so Update po Header Status for POId "
-								+ mrnDetailList.get(i).getPoId());
-
-						int updatePoHeaderStatus = poHeaderRepository.updateResponsePoHead(2, mrnDetailList.get(i).getPoId());
-
-					}
-					else {
-						List<Integer> sts = new ArrayList<Integer>();
-						sts.add(0);
-						sts.add(1);
-							List<PoDetail> details=poDetailRepo.findAllByPoIdAndStatusNotIn(mrnDetailList.get(i).getPoId(),sts);
-							poDetailsList=new ArrayList<PoDetail>();
-							
-							poDetailsList = poDetailRepo.findAllByStatusAndPoId(1, mrnDetailList.get(i).getPoId());
-		
-						if(poDetailsList.isEmpty()) {
-		
-							int updatePoHeaderStatus = poHeaderRepository.updateResponsePoHead(0, mrnDetailList.get(i).getPoId());
-		
-						}
-						else {
-							int updatePoHeaderStatus = poHeaderRepository.updateResponsePoHead(1, mrnDetailList.get(i).getPoId());
-						}
-					}
-
-				}
+				/*
+				 * PoDetail poDetail =
+				 * poDetailRepo.findByPoDetailId(mrnDetailRes.getPoDetailId());
+				 * 
+				 * if (mrnDetailRes != null) { float remainingQty = 0;
+				 * 
+				 * if (detail.getMrnQtyBeforeEdit() == -1) {
+				 * 
+				 * System.err.println("Inside mrn qty before Edit ==-1");
+				 * 
+				 * remainingQty = poDetail.getPendingQty() - mrnDetailRes.getMrnQty();
+				 * 
+				 * } else {
+				 * 
+				 * System.err.println("Inside mrn qty before edit is greater than 0");
+				 * remainingQty = poDetail.getPendingQty() -
+				 * (mrnDetailRes.getMrnQty()-detail.getMrnQtyBeforeEdit());
+				 * 
+				 * }
+				 * 
+				 * poDetail.setPendingQty(remainingQty); int status = 1;
+				 * 
+				 * if (remainingQty <= 0) {
+				 * System.err.println("Pending qty =0 keeping status=2"); status = 2; }
+				 * 
+				 * poDetail.setStatus(status); PoDetail poDetailStatusUpdate =
+				 * poDetailRepo.save(poDetail);
+				 * 
+				 * List<Integer> stss = new ArrayList<Integer>(); stss.add(2); stss.add(9);
+				 * stss.add(7); List<PoDetail> poDetailsList =
+				 * poDetailRepo.findAllByStatusNotInAndPoId(stss,
+				 * mrnDetailList.get(i).getPoId());
+				 * 
+				 * if (poDetailsList.isEmpty()) {
+				 * 
+				 * System.err.
+				 * println("Po Detail list is Empty so Update po Header Status for POId " +
+				 * mrnDetailList.get(i).getPoId());
+				 * 
+				 * int updatePoHeaderStatus = poHeaderRepository.updateResponsePoHead(2,
+				 * mrnDetailList.get(i).getPoId());
+				 * 
+				 * } else { List<Integer> sts = new ArrayList<Integer>(); sts.add(0);
+				 * sts.add(1); List<PoDetail>
+				 * details=poDetailRepo.findAllByPoIdAndStatusNotIn(mrnDetailList.get(i).getPoId
+				 * (),sts); poDetailsList=new ArrayList<PoDetail>();
+				 * 
+				 * poDetailsList = poDetailRepo.findAllByStatusAndPoId(1,
+				 * mrnDetailList.get(i).getPoId());
+				 * 
+				 * if(poDetailsList.isEmpty()) {
+				 * 
+				 * int updatePoHeaderStatus = poHeaderRepository.updateResponsePoHead(0,
+				 * mrnDetailList.get(i).getPoId());
+				 * 
+				 * } else { int updatePoHeaderStatus =
+				 * poHeaderRepository.updateResponsePoHead(1, mrnDetailList.get(i).getPoId()); }
+				 * }
+				 * 
+				 * }
+				 */
 
 			}
 
