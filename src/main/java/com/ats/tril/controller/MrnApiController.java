@@ -135,22 +135,22 @@ public class MrnApiController {
 
 			int mrnId = res.getMrnId();
 			String mrnNo = res.getMrnNo();
-			String batchNo;
+			//String batchNo;
 
 			for (int i = 0; i < mrnDetailList.size(); i++) {
 
 				MrnDetail detail = mrnDetailList.get(i);
 
 				GetItem item = getItemRepository.getItemByItemId(detail.getItemId());
-				batchNo = new String();
-				batchNo = mrnNo + "-" + item.getItemCode();
+				//batchNo = new String();
+				//batchNo = mrnNo + "-" + item.getItemCode();
 
 				int mrnOfcDtlId = detail.getMrnDetailId();
 				
 				System.out.println("Ofice MRN Detail Id : "+mrnOfcDtlId);
 				
 				detail.setMrnDetailId(0);
-				detail.setBatchNo(batchNo);
+				//detail.setBatchNo(batchNo);
 
 				detail.setMrnId(mrnId);
 				MrnDetail mrnDetailRes = mrnDetailRepo.save(detail);
