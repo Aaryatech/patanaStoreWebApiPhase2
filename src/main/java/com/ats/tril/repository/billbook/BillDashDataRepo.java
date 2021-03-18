@@ -65,7 +65,7 @@ public interface BillDashDataRepo extends JpaRepository<BillDashData, Integer>{
 			"ORDER BY\r\n" + 
 			"    expiry_date\r\n" + 
 			"DESC\r\n" + 
-			") t1 WHERE t1.temp_expiry_date <= DATE_ADD(CURDATE(), INTERVAL (SELECT value from t_setting WHERE setting_id=6) DAY)", nativeQuery = true)
+			") t1 WHERE t1.temp_expiry_date <= DATE_ADD(CURDATE(), INTERVAL (SELECT value from t_setting WHERE setting_id=11) DAY)", nativeQuery = true)
 	List<BillDashData> getPendingBillsForDashboard();
 	
 	
