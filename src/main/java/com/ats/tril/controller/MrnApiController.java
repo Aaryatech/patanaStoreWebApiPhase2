@@ -13,12 +13,14 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ats.tril.model.ErrorMessage;
 import com.ats.tril.model.GetItem;
 import com.ats.tril.model.PoDetail;
+import com.ats.tril.model.billbook.MrnDetailForBillBook;
 import com.ats.tril.model.indent.DashIndentDetails;
 import com.ats.tril.model.indent.GetIndents;
 import com.ats.tril.model.mrn.GetMrnDetail;
 import com.ats.tril.model.mrn.GetMrnDetailRej;
 import com.ats.tril.model.mrn.GetMrnHeader;
 import com.ats.tril.model.mrn.GetMrnHeaderRej;
+import com.ats.tril.model.mrn.GetMrnHeaderWithAmt;
 import com.ats.tril.model.mrn.MrnDetail;
 import com.ats.tril.model.mrn.MrnHeader;
 import com.ats.tril.model.mrn.MrnReport;
@@ -30,6 +32,8 @@ import com.ats.tril.model.rejection.RejectionMemoDetail;
 import com.ats.tril.model.rejection.repo.GetMrnDetailRejRepo;
 import com.ats.tril.model.rejection.repo.GetMrnHeaderRejRepo;
 import com.ats.tril.repository.GetItemRepository;
+import com.ats.tril.repository.GetMrnHeaderWithAmtRepository;
+import com.ats.tril.repository.MrnDetailForBillBookRepo;
 import com.ats.tril.repository.PoDetailRepository;
 import com.ats.tril.repository.PoHeaderRepository;
 import com.ats.tril.repository.mrn.GetMrnDetailRepository;
@@ -79,6 +83,9 @@ public class MrnApiController {
 	
 	@Autowired 
 	OfficeMrnHeaderRepository officeMrnHeadRepo;
+	
+	@Autowired
+	GetMrnHeaderWithAmtRepository getMrnHeaderWithAmtRepository;
 
 	@RequestMapping(value = { "/getOneMrnHeader" }, method = RequestMethod.POST)
 	public @ResponseBody MrnHeader getMrnHeaderByMrnId(@RequestParam("mrnId") int mrnId) {
@@ -1261,4 +1268,63 @@ public class MrnApiController {
 
 		return errMsg;
 	}
+	
+
+	// GET ALL MRN HEADERS BY STATUS=4
+
+	@RequestMapping(value = { "/getAllMrnHeaderByVendor" }, method = RequestMethod.POST)
+	public @ResponseBody List<GetMrnHeaderWithAmt> getAllMrnHeaderByVendor(@RequestParam("vendorId") int vendorId) {
+
+		List<GetMrnHeaderWithAmt> mrnHeaderList = new ArrayList<GetMrnHeaderWithAmt>();
+
+		try {
+
+			mrnHeaderList = getMrnHeaderWithAmtRepository.getMrnHeaderByVendor(vendorId);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+
+		return mrnHeaderList;
+
+	}
+	
+	@Autowired
+	MrnDetailForBillBookRepo mrnDetailForBillBookRepo;
+
+	@RequestMapping(value = { "/getMrnDetailForBillBookByMrnId" }, method = RequestMethod.POST)
+	public @ResponseBody List<MrnDetailForBillBook> getMrnDetailForBillBookByMrnId(@RequestParam("mrnId") int mrnId) {
+
+		List<MrnDetailForBillBook> mrnDetailList = new ArrayList<>();
+
+		try {
+
+			mrnDetailList = mrnDetailForBillBookRepo.getMrnDetailForBillBook(mrnId);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return mrnDetailList;
+
+	}	
+	
+	@RequestMapping(value = { "/getAccountLevelItemListForBill" }, method = RequestMethod.POST)
+	public @ResponseBody List<MrnDetailForBillBook> getAccountLevelItemListForBill() {
+
+		List<MrnDetailForBillBook> itemList = new ArrayList<>();
+
+		try {
+			itemList = mrnDetailForBillBookRepo.getAccountLevelItemListForBill();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return itemList;
+
+	}
+
 }

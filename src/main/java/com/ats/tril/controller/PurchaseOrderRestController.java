@@ -420,5 +420,55 @@ public class PurchaseOrderRestController {
 		return vendor;
 
 	}
+	
+	@RequestMapping(value = { "/getVendorForBillBook" }, method = RequestMethod.POST)
+	public @ResponseBody List<Vendor> getVendorForBillBook() {
+
+		List<Vendor> vendor = new ArrayList<>();
+		try {
+			vendor = vendorRepository.getVendorForBillBook();
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return vendor;
+
+	}
+	
+	@RequestMapping(value = { "/getAllVendorListForDash" }, method = RequestMethod.POST)
+	public @ResponseBody List<Vendor> getAllVendorListForDash() {
+
+		List<Vendor> vendor = new ArrayList<>();
+		try {
+			vendor = vendorRepository.getAllVendor();
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return vendor;
+
+	}
+	
+	
+	
+	@RequestMapping(value = { "/getVendorById" }, method = RequestMethod.POST)
+	public @ResponseBody Vendor getVendorById(@RequestParam("vendId") int vendId) {
+
+		Vendor vendor = new Vendor();
+		try {
+			vendor = vendorRepository.getVendorById(vendId);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return vendor;
+
+	}
 
 }
