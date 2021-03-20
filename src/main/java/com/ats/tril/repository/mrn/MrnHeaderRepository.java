@@ -17,8 +17,8 @@ public interface MrnHeaderRepository extends JpaRepository<MrnHeader, Integer>{
 
 	@Transactional
 	@Modifying
-	@Query("UPDATE MrnHeader SET mrn_status=2  WHERE mrn_id=:mrnId ")
-	int updateMrnStatus(@Param("mrnId") int mrnId);
+	@Query("UPDATE MrnHeader SET mrn_status=:status  WHERE mrn_id=:mrnId ")
+	int updateMrnStatus(@Param("mrnId") int mrnId, int status);
 	
 	@Transactional
 	@Modifying
