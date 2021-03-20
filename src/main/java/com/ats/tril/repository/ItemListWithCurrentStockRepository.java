@@ -356,7 +356,7 @@ public interface ItemListWithCurrentStockRepository extends JpaRepository<ItemLi
 			@Param("toDate")String toDate,@Param("itemId") int itemId);
 	
 	@Query(value = ("Select\r\n" + 
-			"            SUM(item_issue_detail.item_request_qty) as yesterday_issue                    \r\n" + 
+			"            ifnull(SUM(item_issue_detail.item_request_qty),0) as yesterday_issue                    \r\n" + 
 			"        FROM\r\n" + 
 			"            item_issue_header,\r\n" + 
 			"            item_issue_detail                     \r\n" + 
